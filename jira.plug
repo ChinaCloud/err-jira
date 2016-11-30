@@ -7,3 +7,6 @@ Version = 3
 
 [Documentation]
 Description = Jira plugin
+
+[Errbot]
+Min=4.3.4
