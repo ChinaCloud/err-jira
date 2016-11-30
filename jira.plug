@@ -1,0 +1,9 @@
+[Core]
+Name = Jira
+Module = jira
+
+[Python]
+Version = 3
+
+[Documentation]
+Description = Jira plugin
