@@ -6,8 +6,11 @@ class Jira(BotPlugin):
 
     def get_configuration_template(self):
         return {
-            'ID_TOKEN': '00112233445566778899aabbccddeeff',
-            'USERNAME':'changeme'
+            'SERVER': 'http://172.16.80.81:8888',
+            'USERNAME': 'xuwenbao',
+            'PASSWORD': '123',
+            'PROJECT': 'PAAS',
+            'BOARD': 'Paas Scrum',
         }
 
     def callback_mention(self, message, mentioned_people):
