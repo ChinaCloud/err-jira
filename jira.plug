@@ -1,6 +1,6 @@
 [Core]
 Name = Jira
-Module = jira_plugin
+Module = jira_
 
 [Python]
 Version = 3
