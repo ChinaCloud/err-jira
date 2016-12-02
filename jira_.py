@@ -1,7 +1,9 @@
 # coding: utf-8
-from errbot import BotPlugin, botcmd
+from errbot import botcmd, BotPlugin
+from helpers.jira_ import CronableMixin
 
-class Jira(BotPlugin):
+
+class Jira(CronableMixin, BotPlugin):
     """Jira plugin for Errbot"""
 
     def get_configuration_template(self):
@@ -16,6 +18,14 @@ class Jira(BotPlugin):
     def callback_mention(self, message, mentioned_people):
         if self.bot_identifier in mentioned_people:
             self.send(message.frm, '找我嘎哈？')
+
+    def activate(self):
+        super().activate()
+
+        def test():
+            self.log.info('test running')
+
+        self.start_cron(method=test, second=59)
 
     @botcmd
     def jira_add(self, mess, args):
