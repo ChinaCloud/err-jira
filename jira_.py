@@ -19,14 +19,6 @@ class Jira(CronableMixin, BotPlugin):
         if self.bot_identifier in mentioned_people:
             self.send(message.frm, '找我嘎哈？')
 
-    def activate(self):
-        super().activate()
-
-        def test():
-            self.log.info('test running')
-
-        self.start_cron(method=test, second=59)
-
     @botcmd
     def jira_add(self, mess, args):
         # Will respond to !basket add
