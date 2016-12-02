@@ -6,14 +6,12 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 class CronableMixin(object):
 
-    def activate(self) -> None:
-        super().activate()
+    def _init_scheduler(self) -> None:
         self.log.info('Init scheduler and start')
         self.scheduler = BackgroundScheduler()
         self.scheduler.start()
 
-    def deactivate(self) -> None:
-        super().deactivate()
+    def _shutdown_scheduler(self) -> None:
         if self.scheduler.running:
             self.scheduler.shutdown()
 

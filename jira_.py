@@ -15,6 +15,14 @@ class Jira(CronableMixin, BotPlugin):
             'BOARD': 'Paas Scrum',
         }
 
+    def activate(self):
+        super().activate()
+        self._init_scheduler()
+
+    def deactivate(self):
+        super().deactivate()
+        self._shutdown_scheduler()
+
     def callback_mention(self, message, mentioned_people):
         if self.bot_identifier in mentioned_people:
             self.send(message.frm, '找我嘎哈？')
