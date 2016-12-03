@@ -8,11 +8,11 @@ class Jira(CronableMixin, BotPlugin):
 
     def get_configuration_template(self):
         return {
-            'SERVER': 'http://172.16.80.81:8888',
-            'USERNAME': 'xuwenbao',
-            'PASSWORD': '123',
-            'PROJECT': 'PAAS',
-            'BOARD': 'Paas Scrum',
+            'SERVER': 'http://172.16.80.81:8888', # Jira服务器地址
+            'USERNAME': 'xuwenbao', # Jira用户名
+            'PASSWORD': '123', # Jira密码
+            'PROJECT': 'PAAS', # Jira项目
+            'BOARD': 'Paas Scrum', # Jira Board
         }
 
     def activate(self):
@@ -28,9 +28,8 @@ class Jira(CronableMixin, BotPlugin):
             self.send(message.frm, '找我嘎哈？')
 
     @botcmd
-    def jira_add(self, mess, args):
-        # Will respond to !basket add
-        return 'Jira added'
+    def jira_test(self, mess, args):
+        return '大爷, 来玩玩啊!'
 
     @botcmd
     def jira_remove(self, mess, args):
