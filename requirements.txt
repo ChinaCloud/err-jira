@@ -2,3 +2,4 @@ jira==1.0.7
 APScheduler==3.3.0
 pandas==0.19.1
 pygal==2.3.0
+confire==0.2.0
