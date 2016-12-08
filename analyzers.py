@@ -60,7 +60,7 @@ class JiraIssueAnalyzer(Analyzer):
                    'creator', 'reporter', 'created', 'updated', 'duedate']
         self._base_frame = DataFrame(data=data, index=index).T
 
-    def stories_status_report(self, groupby:str=None, title:str='Stories status') -> str:
+    def stories_report(self, groupby:str=None, title:str= 'Stories status') -> str:
         if not groupby:
             groupby = ['assignee', 'status']
         else:
