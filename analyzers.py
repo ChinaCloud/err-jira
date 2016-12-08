@@ -60,16 +60,18 @@ class JiraIssueAnalyzer(Analyzer):
                    'creator', 'reporter', 'created', 'updated', 'duedate']
         self._base_frame = DataFrame(data=data, index=index).T
 
-    def stories_status_report(self, groupby=None) -> str:
+    def stories_status_report(self, groupby:str=None, title:str='Stories status') -> str:
         if not groupby:
             groupby = ['assignee', 'status']
+        else:
+            groupby = [groupby].append('status')
 
         # TODO: 替换成可变索引列
         counted = self._base_frame.groupby(groupby)['status'].count()
         frame = counted.unstack(fill_value=0).reindex(columns=JIRA_ISSUE_STATUS, fill_value=0)
 
         bar_chart = pygal.HorizontalStackedBar()
-        bar_chart.title = "Stories status"
+        bar_chart.title = title
         bar_chart.x_labels = frame.index.tolist()
 
         for col in frame:

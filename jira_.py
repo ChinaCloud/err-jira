@@ -57,5 +57,5 @@ class Jira(CronableMixin, ClientFacadeMixin, BotPlugin):
         stories = self.get_current_stories(self.project_name)
         analyzer = JiraIssueAnalyzer()
         analyzer.tranfer(stories)
-        f = io.BytesIO(analyzer.stories_status_report())
+        f = io.BytesIO(analyzer.stories_status_report(groupby=['component', 'status']))
         self.send_stream_request(mess.frm, f, name='stories.svg', stream_type='image/svg+xml')
