@@ -1,10 +1,13 @@
 # coding: utf-8
-from jira import JIRA
 from errbot import botcmd, BotPlugin
-from helpers.jira_ import CronableMixin
+
+from mixins import (
+    CronableMixin,
+    ClientFacadeMixin,
+)
 
 
-class Jira(CronableMixin, BotPlugin):
+class Jira(CronableMixin, ClientFacadeMixin, BotPlugin):
     """Jira plugin for Errbot"""
 
     def activate(self):
@@ -30,16 +33,8 @@ class Jira(CronableMixin, BotPlugin):
             'PASSWORD': '123', # Jira密码
         }
 
-    def get_client(self):
-        if not hasattr(self, '_client') or self._client is None:
-            assert hasattr(self, 'config') or self.config is None, \
-                '缺少服务器与认证配置, 请联系管理员(通过"!plugin config"命令指定相关配置).'
-            self._client = JIRA(server=self.config['SERVER'],
-                                basic_auth=(self.config['USERNAME'], self.config['PASSWORD']))
-        return self._client
-
     @botcmd
-    def jira_test(self, mess, args):
+    def jiratest(self, mess, args):
         return '大爷, 来玩玩啊!'
 
     @botcmd
@@ -48,4 +43,4 @@ class Jira(CronableMixin, BotPlugin):
         查看Jira项目列表
         """
         # TODO: 优化列表显示形式
-        return ' '.join([project.name for project in self.get_client().projects()])
+        return ' '.join([project.name for project in self._get_client().projects()])
