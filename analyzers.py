@@ -2,10 +2,10 @@
 
 from typing import List
 
-import pygal
-import pandas as pd
-from pandas import Series, DataFrame
+from pandas import DataFrame
 from jira.resources import Issue
+
+import renders
 
 
 JIRA_JOB_TYPE = ['Story', '任务']
@@ -60,20 +60,13 @@ class JiraIssueAnalyzer(Analyzer):
                    'creator', 'reporter', 'created', 'updated', 'duedate']
         self._base_frame = DataFrame(data=data, index=index).T
 
-    def stories_report(self, groupby:str=None, title:str= 'Stories status') -> str:
+    def stories_report(self, groupby:list=None, title:str= 'Stories status') -> str:
         if not groupby:
             groupby = ['assignee', 'status']
         else:
-            groupby = [groupby].append('status')
+            groupby = groupby.append('status')
 
         # TODO: 替换成可变索引列
         counted = self._base_frame.groupby(groupby)['status'].count()
         frame = counted.unstack(fill_value=0).reindex(columns=JIRA_ISSUE_STATUS, fill_value=0)
-
-        bar_chart = pygal.HorizontalStackedBar()
-        bar_chart.title = title
-        bar_chart.x_labels = frame.index.tolist()
-
-        for col in frame:
-            bar_chart.add(col, frame[col].tolist())
-        return bar_chart.render()
+        return renders.render_horizontalstackedbar(frame, title)

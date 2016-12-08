@@ -3,8 +3,8 @@ import io
 
 from errbot import botcmd, BotPlugin
 
+from helpers import messaging
 from analyzers import JiraIssueAnalyzer
-from helpers.messaging import processing
 from mixins import (
     CronableMixin,
     ClientFacadeMixin,
@@ -52,10 +52,10 @@ class Jira(CronableMixin, ClientFacadeMixin, BotPlugin):
         return ' '.join([project.name for project in self._get_client().projects()])
 
     @botcmd
-    @processing
+    @messaging.processing
     def report_stories(self, mess, args):
         stories = self.get_current_stories(self.project_name)
         analyzer = JiraIssueAnalyzer()
         analyzer.tranfer(stories)
-        f = io.BytesIO(analyzer.stories_report(groupby=['component', 'status']))
+        f = io.BytesIO(analyzer.stories_report())
         self.send_stream_request(mess.frm, f, name='stories.svg', stream_type='image/svg+xml')
