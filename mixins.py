@@ -1,7 +1,8 @@
 # coding: utf-8
-from typing import Callable
+from typing import Callable, List
 
 from jira import JIRA
+from jira.resources import Issue
 from apscheduler.schedulers.background import BackgroundScheduler
 
 
@@ -32,12 +33,6 @@ class ClientFacadeMixin(object):
     JQL_CURRENT_STORIES = JQL_CURRENT_ISSUES + ' AND type != "缺陷"'
 
     def _get_client(self):
-        # TODO: 通过Message形式配置, 删除以下代码
-        self.projects = ['PAAS']
-        self.project_boards = {
-            'PAAS': ['Paas Scrum']
-        }
-
         if not hasattr(self, '_client') or self._client is None:
             assert hasattr(self, 'config') or self.config is None, \
                 '缺少服务器与认证配置, 请联系管理员(通过"!plugin config"命令指定相关配置).'
@@ -45,8 +40,8 @@ class ClientFacadeMixin(object):
                                 basic_auth=(self.config['USERNAME'], self.config['PASSWORD']))
         return self._client
 
-    def get_current_issues(self, project_name) -> list:
-        return self._client.search_issues(self.JQL_CURRENT_ISSUES % project_name)
+    def get_current_issues(self, project_name) -> List[Issue]:
+        return self._get_client().search_issues(self.JQL_CURRENT_ISSUES % project_name)
 
-    def get_current_stories(self, project_name) -> list:
-        return self._client.search_issues(self.JQL_CURRENT_STORIES % project_name)
+    def get_current_stories(self, project_name) -> List[Issue]:
+        return self._get_client().search_issues(self.JQL_CURRENT_STORIES % project_name)

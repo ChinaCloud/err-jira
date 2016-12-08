@@ -1,6 +1,10 @@
 # coding: utf-8
+import io
+
 from errbot import botcmd, BotPlugin
 
+from analyzers import JiraIssueAnalyzer
+from helpers.messaging import processing
 from mixins import (
     CronableMixin,
     ClientFacadeMixin,
@@ -13,6 +17,8 @@ class Jira(CronableMixin, ClientFacadeMixin, BotPlugin):
     def activate(self):
         super().activate()
         self._init_scheduler()
+
+        self.project_name = 'PAAS'
 
     def deactivate(self):
         super().deactivate()
@@ -44,3 +50,12 @@ class Jira(CronableMixin, ClientFacadeMixin, BotPlugin):
         """
         # TODO: 优化列表显示形式
         return ' '.join([project.name for project in self._get_client().projects()])
+
+    @botcmd
+    @processing
+    def report_stories(self, mess, args):
+        stories = self.get_current_stories(self.project_name)
+        analyzer = JiraIssueAnalyzer()
+        analyzer.tranfer(stories)
+        f = io.BytesIO(analyzer.stories_status_report())
+        self.send_stream_request(mess.frm, f, name='stories.svg', stream_type='image/svg+xml')

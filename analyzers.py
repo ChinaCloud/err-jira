@@ -1,8 +1,11 @@
 # coding: utf-8
 
+from typing import List
+
 import pygal
 import pandas as pd
 from pandas import Series, DataFrame
+from jira.resources import Issue
 
 
 JIRA_JOB_TYPE = ['Story', '任务']
@@ -16,17 +19,26 @@ JIRA_ISSUE_STATUS = [
     'Testing',
     '完成'
 ]
+JIRA_ISSUE_STATUS_DISPLAYNAME = [
+    '准备开发',
+    '开发中',
+    '等待产品经理测试',
+    '产品经理测试',
+    '等待测试',
+    '测试',
+    '完成'
+]
 
 
 class Analyzer(object):
 
-    def tranfer(self, issues:list) -> None:
+    def tranfer(self, issues:List[Issue]) -> None:
         raise(NotImplementedError)
 
 
 class JiraIssueAnalyzer(Analyzer):
 
-    def tranfer(self, issues:list) -> None:
+    def tranfer(self, issues:List[Issue]) -> None:
         data = {
             issue.key: [
                 issue.key,
@@ -48,7 +60,7 @@ class JiraIssueAnalyzer(Analyzer):
                    'creator', 'reporter', 'created', 'updated', 'duedate']
         self._base_frame = DataFrame(data=data, index=index).T
 
-    def stories_status_report(self, groupby=None):
+    def stories_status_report(self, groupby=None) -> str:
         if not groupby:
             groupby = ['assignee', 'status']
 
@@ -62,4 +74,4 @@ class JiraIssueAnalyzer(Analyzer):
 
         for col in frame:
             bar_chart.add(col, frame[col].tolist())
-        bar_chart.render()
+        return bar_chart.render()
