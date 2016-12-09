@@ -1,5 +1,5 @@
 ## 成员任务统计
 
-任务总数: {{ stories | length }}
+任务总数: {{ member_stories | length }}
 
-![user-stories-chart]({{ story_members_chart_uri }})
+![成员任务统计]({{ story_members_chart }})

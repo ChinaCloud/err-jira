@@ -57,7 +57,6 @@ class Jira(CronableMixin, ClientFacadeMixin, BotPlugin):
         return ' '.join([project.name for project in self._get_client().projects()])
 
     @botcmd(template='story_members')
-    @messaging.processing
     def story_members(self, mess, args):
         filename = 'story_members.svg'
         filepath = os.path.join(STATIC_DIR, filename)
@@ -69,6 +68,6 @@ class Jira(CronableMixin, ClientFacadeMixin, BotPlugin):
         analyzer.stories_report(['assignee', 'status'], 'Stories status', 'file', filepath)
 
         return {
-            'stories': stories,
-            'story_members_chart_uri': uri,
+            'member_stories': stories,
+            'story_members_chart': uri,
         }
