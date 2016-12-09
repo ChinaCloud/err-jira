@@ -30,13 +30,13 @@ JIRA_ISSUE_STATUS_DISPLAYNAME = [
 ]
 
 
-class Analyzer(object):
+class Reporter(object):
 
     def tranfer(self, issues:List[Issue]) -> None:
         raise(NotImplementedError)
 
 
-class JiraIssueAnalyzer(Analyzer):
+class JiraIssueReporter(Reporter):
 
     def __init__(self, issues:List[Issue]=None):
         if issues is not None:

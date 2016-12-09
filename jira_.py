@@ -5,7 +5,7 @@ import urllib.parse
 from errbot import botcmd, BotPlugin
 
 from helpers import messaging
-from analyzers import JiraIssueAnalyzer
+from reporters import JiraIssueReporter
 from mixins import (
     CronableMixin,
     ClientFacadeMixin,
@@ -63,8 +63,8 @@ class Jira(CronableMixin, ClientFacadeMixin, BotPlugin):
         uri = urllib.parse.urljoin(STATIC_ACCESS_PREFIX, filename)
 
         stories = self.get_current_stories(self.project_name)
-        analyzer = JiraIssueAnalyzer(stories)
-        analyzer.horizontalstacked_bar('成员任务统计', ['assignee', 'status'], 'status', 'file', filepath)
+        reporter = JiraIssueReporter(stories)
+        reporter.horizontalstacked_bar('成员任务统计', ['assignee', 'status'], 'status', 'file', filepath)
 
         return {
             'member_stories': stories,
