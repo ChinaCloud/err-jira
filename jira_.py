@@ -29,10 +29,6 @@ class Jira(CronableMixin, ClientFacadeMixin, BotPlugin):
         super().deactivate()
         self._shutdown_scheduler()
 
-    def callback_mention(self, message, mentioned_people):
-        if self.bot_identifier in mentioned_people:
-            self.send(message.frm, '找我嘎哈？')
-
     def check_configuration(self, configuration):
         # TODO: 添加配置验证, 且在验证不通过时, 清除_client属性
         pass
@@ -71,10 +67,12 @@ class Jira(CronableMixin, ClientFacadeMixin, BotPlugin):
             'story_members_chart': uri,
         }
 
-    @botcmd(template='story_teams')
+    @botcmd
     def story_teams(self, mess, args):
-        stories = self.get_current_issues(self.project_name)
-        return {
-            'team_stories': stories,
-            'story_teams_chart': [],
-        }
+        # stories = self.get_current_issues(self.project_name)
+        # return {
+        #     'team_stories': stories,
+        #     'story_teams_chart': [],
+        # }
+        project = self.get_project_by_name(self.project_name)
+        return project.name

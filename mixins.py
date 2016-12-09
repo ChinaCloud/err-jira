@@ -2,7 +2,7 @@
 from typing import Callable, List
 
 from jira import JIRA
-from jira.resources import Issue
+from jira.resources import Issue, Component, Project
 from apscheduler.schedulers.background import BackgroundScheduler
 
 
@@ -32,13 +32,20 @@ class ClientFacadeMixin(object):
     JQL_CURRENT_ISSUES = 'project = %s AND sprint in openSprints() AND sprint not in futureSprints()'
     JQL_CURRENT_STORIES = JQL_CURRENT_ISSUES + ' AND type != "缺陷"'
 
-    def _get_client(self):
+    def _get_client(self) -> JIRA:
         if not hasattr(self, '_client') or self._client is None:
             assert hasattr(self, 'config') or self.config is None, \
                 '缺少服务器与认证配置, 请联系管理员(通过"!plugin config"命令指定相关配置).'
             self._client = JIRA(server=self.config['SERVER'],
                                 basic_auth=(self.config['USERNAME'], self.config['PASSWORD']))
         return self._client
+
+    def get_project_by_name(self, project_name) -> Project:
+        for project in self._get_client().projects():
+            if project.name ==  project_name:
+                return project
+        else:
+            raise ValueError('未找到名称为{}的项目'.format(project_name))
 
     def get_current_issues(self, project_name) -> List[Issue]:
         return self._get_client().search_issues(self.JQL_CURRENT_ISSUES % project_name)
