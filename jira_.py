@@ -1,5 +1,6 @@
 # coding: utf-8
-import io
+import os.path
+import urllib.parse
 
 from errbot import botcmd, BotPlugin
 
@@ -9,6 +10,10 @@ from mixins import (
     CronableMixin,
     ClientFacadeMixin,
 )
+
+
+STATIC_DIR = '/home/xuwenbao/Downloads'
+STATIC_ACCESS_PREFIX = 'http://10.111.131.37:8080/'
 
 
 class Jira(CronableMixin, ClientFacadeMixin, BotPlugin):
@@ -51,11 +56,19 @@ class Jira(CronableMixin, ClientFacadeMixin, BotPlugin):
         # TODO: 优化列表显示形式
         return ' '.join([project.name for project in self._get_client().projects()])
 
-    @botcmd
+    @botcmd(template='story_members')
     @messaging.processing
-    def report_stories(self, mess, args):
+    def story_members(self, mess, args):
+        filename = 'story_members.svg'
+        filepath = os.path.join(STATIC_DIR, filename)
+        uri = urllib.parse.urljoin(STATIC_ACCESS_PREFIX, filename)
+
         stories = self.get_current_stories(self.project_name)
         analyzer = JiraIssueAnalyzer()
         analyzer.tranfer(stories)
-        f = io.BytesIO(analyzer.stories_report())
-        self.send_stream_request(mess.frm, f, name='stories.svg', stream_type='image/svg+xml')
+        analyzer.stories_report(['assignee', 'status'], 'Stories status', 'file', filepath)
+
+        return {
+            'stories': stories,
+            'story_members_chart_uri': uri,
+        }

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from typing import List
+from typing import List, Any
 
 from pandas import DataFrame
 from jira.resources import Issue
@@ -60,13 +60,9 @@ class JiraIssueAnalyzer(Analyzer):
                    'creator', 'reporter', 'created', 'updated', 'duedate']
         self._base_frame = DataFrame(data=data, index=index).T
 
-    def stories_report(self, groupby:list=None, title:str= 'Stories status') -> str:
-        if not groupby:
-            groupby = ['assignee', 'status']
-        else:
-            groupby = groupby.append('status')
-
+    def stories_report(self, groupby:List[str]=None, title:str= 'Stories status', render_type:str='str',
+                       *args, **kwargs) -> Any:
         # TODO: 替换成可变索引列
         counted = self._base_frame.groupby(groupby)['status'].count()
         frame = counted.unstack(fill_value=0).reindex(columns=JIRA_ISSUE_STATUS, fill_value=0)
-        return renders.render_horizontalstackedbar(frame, title)
+        return renders.render_horizontalstackedbar(frame, title, render_type, *args, **kwargs)
