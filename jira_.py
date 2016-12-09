@@ -63,11 +63,18 @@ class Jira(CronableMixin, ClientFacadeMixin, BotPlugin):
         uri = urllib.parse.urljoin(STATIC_ACCESS_PREFIX, filename)
 
         stories = self.get_current_stories(self.project_name)
-        analyzer = JiraIssueAnalyzer()
-        analyzer.tranfer(stories)
-        analyzer.stories_report(['assignee', 'status'], 'Stories status', 'file', filepath)
+        analyzer = JiraIssueAnalyzer(stories)
+        analyzer.horizontalstacked_bar('成员任务统计', ['assignee', 'status'], 'status', 'file', filepath)
 
         return {
             'member_stories': stories,
             'story_members_chart': uri,
+        }
+
+    @botcmd(template='story_teams')
+    def story_teams(self, mess, args):
+        stories = self.get_current_issues(self.project_name)
+        return {
+            'team_stories': stories,
+            'story_teams_chart': [],
         }

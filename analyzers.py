@@ -38,6 +38,10 @@ class Analyzer(object):
 
 class JiraIssueAnalyzer(Analyzer):
 
+    def __init__(self, issues:List[Issue]=None):
+        if issues is not None:
+            self.tranfer(issues)
+
     def tranfer(self, issues:List[Issue]) -> None:
         data = {
             issue.key: [
@@ -60,9 +64,7 @@ class JiraIssueAnalyzer(Analyzer):
                    'creator', 'reporter', 'created', 'updated', 'duedate']
         self._base_frame = DataFrame(data=data, index=index).T
 
-    def stories_report(self, groupby:List[str]=None, title:str= 'Stories status', render_type:str='str',
-                       *args, **kwargs) -> Any:
-        # TODO: 替换成可变索引列
-        counted = self._base_frame.groupby(groupby)['status'].count()
+    def horizontalstacked_bar(self, title:str, groupby:List[str], countby:str, render_type:str, *args, **kwargs) -> Any:
+        counted = self._base_frame.groupby(groupby)[countby].count()
         frame = counted.unstack(fill_value=0).reindex(columns=JIRA_ISSUE_STATUS, fill_value=0)
         return renders.render_horizontalstackedbar(frame, title, render_type, *args, **kwargs)
