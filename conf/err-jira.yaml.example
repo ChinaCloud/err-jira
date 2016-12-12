@@ -1,0 +1,32 @@
+debug: False
+testing: False
+
+jira:
+  server: http://172.16.80.81:8888
+  username: xuwenbao
+  password: 123
+  job_type:
+    - Story
+    - 任务
+  bug_type:
+    - 缺陷
+  issue_status:
+    - 开始
+    - In Dev
+    - Ready For Product Testing
+    - Product Testing
+    - Ready For Test
+    - Testing
+    - 完成
+  issue_status_displayname:
+    - 准备开发
+    - 开发中
+    - 等待产品经理测试
+    - 产品经理测试
+    - 等待测试
+    - 测试
+    - 完成
+
+static:
+  dir: /home/xuwenbao/Downloads
+  access_prefix: http://10.111.131.37:8080
