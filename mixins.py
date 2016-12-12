@@ -5,6 +5,8 @@ from jira import JIRA
 from jira.resources import Issue, Component, Project
 from apscheduler.schedulers.background import BackgroundScheduler
 
+from settings import settings
+
 
 class CronableMixin(object):
 
@@ -34,10 +36,8 @@ class ClientFacadeMixin(object):
 
     def _get_client(self) -> JIRA:
         if not hasattr(self, '_client') or self._client is None:
-            assert hasattr(self, 'config') or self.config is None, \
-                '缺少服务器与认证配置, 请联系管理员(通过"!plugin config"命令指定相关配置).'
-            self._client = JIRA(server=self.config['SERVER'],
-                                basic_auth=(self.config['USERNAME'], self.config['PASSWORD']))
+            self._client = JIRA(server=settings.jira.server,
+                                basic_auth=(settings.jira.username, settings.jira.password))
         return self._client
 
     def get_project_by_name(self, project_name) -> Project:

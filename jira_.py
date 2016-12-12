@@ -4,6 +4,7 @@ import urllib.parse
 
 from errbot import botcmd, BotPlugin
 
+from settings import settings
 from helpers import messaging
 from reporters import JiraIssueReporter
 from mixins import (
@@ -12,18 +13,12 @@ from mixins import (
 )
 
 
-STATIC_DIR = '/home/xuwenbao/Downloads'
-STATIC_ACCESS_PREFIX = 'http://10.111.131.37:8080/'
-
-
 class Jira(CronableMixin, ClientFacadeMixin, BotPlugin):
     """Jira plugin for Errbot"""
 
     def activate(self):
         super().activate()
         self._init_scheduler()
-
-        self.project_name = 'PAAS'
 
     def deactivate(self):
         super().deactivate()
@@ -34,11 +29,7 @@ class Jira(CronableMixin, ClientFacadeMixin, BotPlugin):
         pass
 
     def get_configuration_template(self):
-        return {
-            'SERVER': 'http://172.16.80.81:8888', # Jira服务器地址
-            'USERNAME': 'xuwenbao', # Jira用户名
-            'PASSWORD': '123', # Jira密码
-        }
+        pass
 
     @botcmd
     def jiratest(self, mess, args):
@@ -55,10 +46,10 @@ class Jira(CronableMixin, ClientFacadeMixin, BotPlugin):
     @botcmd(template='story_members')
     def story_members(self, mess, args):
         filename = 'story_members.svg'
-        filepath = os.path.join(STATIC_DIR, filename)
-        uri = urllib.parse.urljoin(STATIC_ACCESS_PREFIX, filename)
+        filepath = os.path.join(settings.static.dir, filename)
+        uri = urllib.parse.urljoin(settings.static.access_prefix, filename)
 
-        stories = self.get_current_stories(self.project_name)
+        stories = self.get_current_stories(settings.jira.project_name)
         reporter = JiraIssueReporter(stories)
         reporter.horizontalstacked_bar('成员任务统计', ['assignee', 'status'], 'status', 'file', filepath)
 
@@ -74,5 +65,5 @@ class Jira(CronableMixin, ClientFacadeMixin, BotPlugin):
         #     'team_stories': stories,
         #     'story_teams_chart': [],
         # }
-        project = self.get_project_by_name(self.project_name)
+        project = self.get_project_by_name(settings.jira.project_name)
         return project.name

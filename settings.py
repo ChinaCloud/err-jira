@@ -9,6 +9,7 @@ class JiraConfiguration(confire.Configuration):
     server = None
     username = None
     password = None
+    project_name = None
 
     job_type = None
     bug_type = None

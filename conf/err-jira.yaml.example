@@ -5,6 +5,7 @@ jira:
   server: http://172.16.80.81:8888
   username: xuwenbao
   password: 123
+  project_name: PaaS
   job_type:
     - Story
     - 任务

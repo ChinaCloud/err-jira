@@ -1,5 +1,4 @@
 # coding: utf-8
-
 import pygal
 from pandas import Series, DataFrame
 
